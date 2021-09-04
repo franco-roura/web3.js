@@ -18,11 +18,11 @@
  */
 
 import BN = require('bn.js');
-import {Common, PromiEvent, provider, hardfork, chain, BlockNumber, PastLogsOptions, LogsOptions} from 'web3-core';
-import {AbiItem} from 'web3-utils';
+import { Common, PromiEvent, hardfork, chain, BlockNumber, PastLogsOptions, LogsOptions } from 'web3-core'
+import { AbiItem } from 'web3-utils'
 
-// TODO: Add generic type!
-export class Contract {
+// TODO: Add more generics!
+export class Contract<T extends string> {
     constructor(
         jsonInterface: AbiItem[],
         address?: string,
@@ -43,11 +43,11 @@ export class Contract {
 
     options: Options;
 
-    clone(): Contract;
+    clone(): Contract<T>;
 
-    deploy(options: DeployOptions): ContractSendMethod;
+    deploy(options: DeployOptions): ContractSendMethod<T>;
 
-    methods: any;
+    methods: Record<T, (...args: Array<unknown>) => ContractSendMethod<T>>;
 
     once(
         event: string,
@@ -84,11 +84,11 @@ export interface DeployOptions {
     arguments?: any[];
 }
 
-export interface ContractSendMethod {
+export interface ContractSendMethod<T extends string> {
     send(
         options: SendOptions,
         callback?: (err: Error, transactionHash: string) => void
-    ): PromiEvent<Contract>;
+    ): PromiEvent<Contract<T>>;
 
     call(
         options?: CallOptions,
